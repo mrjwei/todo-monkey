@@ -1,18 +1,27 @@
-import {useContext} from 'react'
+import {useContext, useState, useEffect} from 'react'
 import {useRouter} from 'next/router'
-import {FirebaseContext} from '@/features/firebase'
+import {SessionContext} from '@/features/session'
 
 const Today = () => {
-  const firebase = useContext(FirebaseContext)
+  const {firebase, authenticatedUser, isLoading} = useContext(SessionContext)
 
   const router = useRouter()
+
+  if (isLoading) {
+    return <div>loading...</div>
+  }
+
+  if (!authenticatedUser) {
+    router.push("/signin")
+    return null
+  }
 
   const handleSignOut = () => {
     if (!firebase) return
 
     firebase.signOut()
       .then(() => {
-        router.push("/")
+        router.push("/signin")
       })
   }
 

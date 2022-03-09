@@ -1,9 +1,13 @@
-import {ChangeEventHandler, useState, useContext} from 'react'
+import React, {ChangeEventHandler, useState, useContext} from 'react'
 import {useRouter} from 'next/router'
-import { FirebaseContext } from '@/features/firebase'
+import Link from 'next/link'
+import { SessionContext } from '@/features/session'
 
 const SignIn = () => {
-  const firebase = useContext(FirebaseContext)
+  const {firebase, authenticatedUser} = useContext(SessionContext)
+
+  console.log(authenticatedUser);
+
 
   const router = useRouter()
 
@@ -18,18 +22,23 @@ const SignIn = () => {
       [target.id]: target.value
     })
   }
-  const handleSignIn = () => {
-    if (!firebase) return
+  const handleSignIn = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+
+    if (!firebase) {
+      console.log('no firebase')
+      return
+    }
+
     firebase.signIn(values.email, values.password)
       .then((userCredentials) => {
-        const user = userCredentials.user
         router.push("/today")
       })
       .catch(error => console.log(error.code, error.message))
   }
   return (
     <div>
-      <h1>Sign Up</h1>
+      <h1>Sign In</h1>
       <form
         onSubmit={handleSignIn}
       >
@@ -42,6 +51,7 @@ const SignIn = () => {
           <input type="password" id="password" value={values.password} onChange={handleChange} />
         </div>
         <button type="submit">Submit</button>
+        <p>No account? <Link href="/signup">Sign Up</Link></p>
       </form>
     </div>
   )
