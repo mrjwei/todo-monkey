@@ -21,7 +21,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       }
       setIsLoading(false)
     })
-  }, [])
+  }, [firebase.auth])
 
   return (
     <SessionContext.Provider value={{firebase, authenticatedUser, isLoading}}>

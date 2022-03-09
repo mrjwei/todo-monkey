@@ -1,9 +1,10 @@
 import React, {ChangeEventHandler, useState, useContext} from 'react'
 import {useRouter} from 'next/router'
-import { FirebaseContext } from '@/features/firebase'
+import Link from 'next/link'
+import { SessionContext } from '@/features/session'
 
 const SignUp = () => {
-  const firebase = useContext(FirebaseContext)
+  const {firebase, authenticatedUser, isLoading} = useContext(SessionContext)
 
   const router = useRouter()
 
@@ -13,6 +14,16 @@ const SignUp = () => {
     email: "",
     password: "",
   })
+
+  if (isLoading) {
+    return <div>loading...</div>
+  }
+
+  if (authenticatedUser) {
+    router.push("/today")
+    return null
+  }
+
   const handleChange: ChangeEventHandler<HTMLInputElement> = (event) => {
     const target = event.target as HTMLInputElement
     setValues({
@@ -62,6 +73,7 @@ const SignUp = () => {
           <input type="password" name="password" id="password" value={values.password} onChange={handleChange} />
         </div>
         <button type="submit">Submit</button>
+        <p>Already have an account? <Link href="/signin">Sign In</Link></p>
       </form>
     </div>
   )

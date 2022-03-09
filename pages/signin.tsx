@@ -4,10 +4,7 @@ import Link from 'next/link'
 import { SessionContext } from '@/features/session'
 
 const SignIn = () => {
-  const {firebase, authenticatedUser} = useContext(SessionContext)
-
-  console.log(authenticatedUser);
-
+  const {firebase, authenticatedUser, isLoading} = useContext(SessionContext)
 
   const router = useRouter()
 
@@ -15,6 +12,16 @@ const SignIn = () => {
     email: "",
     password: "",
   })
+
+  if (isLoading) {
+    return <div>loading...</div>
+  }
+
+  if (authenticatedUser) {
+    router.push("/today")
+    return null
+  }
+
   const handleChange: ChangeEventHandler<HTMLInputElement> = (event) => {
     const target = event.target as HTMLInputElement
     setValues({
@@ -25,13 +32,10 @@ const SignIn = () => {
   const handleSignIn = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
-    if (!firebase) {
-      console.log('no firebase')
-      return
-    }
+    if (!firebase) return
 
     firebase.signIn(values.email, values.password)
-      .then((userCredentials) => {
+      .then(() => {
         router.push("/today")
       })
       .catch(error => console.log(error.code, error.message))
@@ -51,7 +55,7 @@ const SignIn = () => {
           <input type="password" id="password" value={values.password} onChange={handleChange} />
         </div>
         <button type="submit">Submit</button>
-        <p>No account? <Link href="/signup">Sign Up</Link></p>
+        <p>Not have an account? <Link href="/signup">Sign Up</Link></p>
       </form>
     </div>
   )

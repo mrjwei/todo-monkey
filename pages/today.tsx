@@ -1,4 +1,4 @@
-import {useContext, useState, useEffect} from 'react'
+import {useContext} from 'react'
 import {useRouter} from 'next/router'
 import {SessionContext} from '@/features/session'
 
