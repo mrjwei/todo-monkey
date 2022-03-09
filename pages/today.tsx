@@ -3,7 +3,7 @@ import {useRouter} from 'next/router'
 import {SessionContext} from '@/features/session'
 
 const Today = () => {
-  const {firebase, authenticatedUser, isLoading} = useContext(SessionContext)
+  const {authenticatedUser, isLoading} = useContext(SessionContext)
 
   const router = useRouter()
 
@@ -16,17 +16,8 @@ const Today = () => {
     return null
   }
 
-  const handleSignOut = () => {
-    if (!firebase) return
-
-    firebase.signOut()
-      .then(() => {
-        router.push("/signin")
-      })
-  }
-
   return (
-    <button onClick={handleSignOut}>Sign Out</button>
+    <p>today</p>
   )
 }
 

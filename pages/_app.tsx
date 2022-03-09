@@ -1,9 +1,14 @@
 import '../styles/globals.css'
+import 'antd/dist/antd.css'
 import {useState, useEffect} from 'react'
 import type { AppProps } from 'next/app'
 import {User, onAuthStateChanged} from 'firebase/auth'
-import {Firebase, FirebaseContext} from '@/features/firebase'
+import {Firebase} from '@/features/firebase'
 import {SessionContext} from '@/features/session'
+import {
+  NotAuthenticatedLayout,
+  AuthenticatedLayout
+} from '@/features/ui'
 
 function MyApp({ Component, pageProps }: AppProps) {
   const firebase = new Firebase()
@@ -25,7 +30,18 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <SessionContext.Provider value={{firebase, authenticatedUser, isLoading}}>
-      <Component {...pageProps} />
+      {authenticatedUser ? (
+        <AuthenticatedLayout
+          username={authenticatedUser.email!}
+          firebase={firebase}
+        >
+          <Component {...pageProps} />
+        </AuthenticatedLayout>
+      ) : (
+        <NotAuthenticatedLayout>
+          <Component {...pageProps} />
+        </NotAuthenticatedLayout>
+      )}
     </SessionContext.Provider>
   )
 }
